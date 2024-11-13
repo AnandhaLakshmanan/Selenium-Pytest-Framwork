@@ -10,7 +10,8 @@ from selenium.webdriver.support.wait import WebDriverWait
 
 @pytest.mark.usefixtures("setup")
 class BaseClass:
-    def get_logger(self):
+    @staticmethod
+    def get_logger():
         logger_name = inspect.stack()[1][3]
         logger = logging.getLogger(logger_name)
         file_handler = logging.FileHandler("test.log", "a")
@@ -23,6 +24,7 @@ class BaseClass:
     def wait_till_element_is_located(self, locator):
         return WebDriverWait(self.driver, 10).until(expected_conditions.presence_of_element_located(locator))
 
-    def select_from_static_dropdown_by_text(self, ele, text):
+    @staticmethod
+    def select_from_static_dropdown_by_text(ele, text):
         sel = Select(ele)
         sel.select_by_visible_text(text)

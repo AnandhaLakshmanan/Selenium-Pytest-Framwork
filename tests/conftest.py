@@ -2,8 +2,12 @@ import pytest
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.firefox.service import Service as FirefoxService
+from webdriver_manager.chrome import ChromeDriverManager
+from webdriver_manager.firefox import GeckoDriverManager
 
 driver = None
+
+
 def pytest_addoption(parser):
     parser.addoption(
         "--browser_name", action="store", default="chrome"
@@ -15,24 +19,19 @@ def setup(request):
     browser_name = request.config.getoption("browser_name")
     global driver
     if browser_name == "chrome":
-        service_obj = ChromeService("C:/Users/Dell/Downloads/chromedriver-win64/chromedriver-win64/chromedriver.exe")
-        driver = webdriver.Chrome(service=service_obj)
+        chrome_service = ChromeService(ChromeDriverManager().install())
+        driver = webdriver.Chrome(service=chrome_service)
     elif browser_name == "firefox":
-        service_obj = FirefoxService("C:/Users/Dell/Downloads/geckodriver-v0.35.0-win64/geckodriver.exe")
-        driver = webdriver.Firefox(service=service_obj)
-    elif browser_name == "edge":
-        # TODO
-        pass
+        firefox_service = FirefoxService(GeckoDriverManager().install())
+        driver = webdriver.Firefox(service=firefox_service)
     driver.get("https://rahulshettyacademy.com/angularpractice/")
     driver.maximize_window()
-    # test file with class in which a test method contains driver will be assigned by this
-    # its like a class variable
     request.cls.driver = driver
     yield
     driver.close()
 
 
-@pytest.mark.hookwrapper
+@pytest.hookimpl(hookwrapper=True)
 def pytest_runtest_makereport(item):
     """
         Extends the PyTest Plugin to take and embed screenshot in html report, whenever test fails.

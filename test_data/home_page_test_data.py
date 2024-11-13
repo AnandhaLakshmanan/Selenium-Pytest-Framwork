@@ -7,7 +7,7 @@ class HomePageTestData:
 
     @staticmethod
     def get_test_data_from_excel(test_case_name):
-        book = openpyxl.load_workbook("D:\\Interview prep\\Python\\snippets\\practice\\python_demo_excel.xlsx")
+        book = openpyxl.load_workbook("test_data/test_data.xlsx")
         sheet = book.active
         test_data = []
         for row in range(1, sheet.max_row + 1):
