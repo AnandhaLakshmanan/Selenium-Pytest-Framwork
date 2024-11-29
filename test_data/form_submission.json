@@ -1,0 +1,20 @@
+[
+  {
+    "name": "John Doe",
+    "email": "johndoe@example.com",
+    "password": "password123",
+    "gender": "Male",
+    "employment_status": "Student",
+    "likes_ice_cream": false,
+    "dob": "01-01-2001"
+  },
+  {
+    "name": "Jane Smith",
+    "email": "janesmith@example.com",
+    "password": "securepass456",
+    "gender": "Female",
+    "employment_status": "Employed",
+    "likes_ice_cream": true,
+    "dob": "20-05-1995"
+  }
+]
