@@ -1,30 +1,32 @@
 import inspect
 import logging
+from pathlib import Path
 
 import pytest
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions
-from selenium.webdriver.support.select import Select
-from selenium.webdriver.support.wait import WebDriverWait
 
 
 @pytest.mark.usefixtures("setup")
 class BaseClass:
     @staticmethod
-    def get_logger():
-        logger_name = inspect.stack()[1][3]
-        logger = logging.getLogger(logger_name)
-        file_handler = logging.FileHandler("test.log", "a")
-        formatter = logging.Formatter("%(asctime)s: %(levelname)s: %(name)s: %(message)s")
+    def create_logger():
+        """
+        Sets up and returns a logger instance for the current test.
+
+        :return: Configured logger object.
+        """
+        test_name = inspect.stack()[1][3]
+        logger = logging.getLogger(test_name)
+        log_file_path = Path("logs/test_execution.log")
+
+        # Ensure the logs directory exists
+        log_file_path.parent.mkdir(parents=True, exist_ok=True)
+
+        file_handler = logging.FileHandler(log_file_path, mode="a")
+        formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(name)s - %(message)s")
         file_handler.setFormatter(formatter)
-        logger.addHandler(file_handler)
+
+        if not logger.handlers:
+            logger.addHandler(file_handler)
+
         logger.setLevel(logging.INFO)
         return logger
-
-    def wait_till_element_is_located(self, locator):
-        return WebDriverWait(self.driver, 10).until(expected_conditions.presence_of_element_located(locator))
-
-    @staticmethod
-    def select_from_static_dropdown_by_text(ele, text):
-        sel = Select(ele)
-        sel.select_by_visible_text(text)
