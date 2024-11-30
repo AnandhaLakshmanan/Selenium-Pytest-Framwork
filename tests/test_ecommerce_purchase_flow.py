@@ -8,10 +8,10 @@ from page_objects.home_page import HomePage
 from page_objects.shopping_page import ShoppingPage
 from page_objects.checkout_page import CheckoutPage
 from page_objects.purchase_page import PurchasePage
-from utils.base_class import BaseClass
+from utils.test_utilities import TestUtilities
 
 
-class TestECommercePurchaseFlow(BaseClass):
+class TestECommercePurchaseFlow(TestUtilities):
     """
     Tests for the e-commerce purchase flow.
     """

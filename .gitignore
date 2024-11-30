@@ -1,9 +1,8 @@
 .idea
-reports/
 *.log
 *.html
 __pycache__/
 *.py[cod]
 .venv
 todo.txt
-logs/
+tmp/
