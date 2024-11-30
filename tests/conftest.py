@@ -1,57 +1,114 @@
 import pytest
 from selenium import webdriver
+from selenium.webdriver.chrome.options import Options as ChromeOptions
+from selenium.webdriver.firefox.options import Options as FirefoxOptions
 from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.firefox.service import Service as FirefoxService
 from webdriver_manager.chrome import ChromeDriverManager
 from webdriver_manager.firefox import GeckoDriverManager
+from pathlib import Path
+from datetime import datetime
+from utils.config import URL, LOG_DIR, SCREENSHOT_DIR, REPORT_DIR
+from typing import Optional, Any
 
 
-def pytest_addoption(parser):
+@pytest.fixture(scope="session", autouse=True)
+def create_directories() -> None:
+    """
+    Ensure the required directories (logs, screenshots, reports) are created before tests run.
+    This fixture runs once per session and creates directories if they don't exist already.
+    """
+    for directory in [LOG_DIR, SCREENSHOT_DIR, REPORT_DIR]:
+        directory.mkdir(parents=True, exist_ok=True)
+
+
+def pytest_addoption(parser: pytest.Parser) -> None:
+    """
+    Add custom command-line options for pytest.
+
+    :param parser: The pytest parser to add custom options to.
+    """
     parser.addoption(
-        "--browser_name", action="store", default="chrome"
+        "--browser_name", action="store", default="chrome", help="Specify the browser to use"
+    )
+    parser.addoption(
+        "--headless", action="store_true", default=None, help="Run tests in headless mode"
     )
 
 
+def pytest_html_report_title(report: pytest.TestReport) -> None:
+    """
+    Set the title of the HTML report.
+
+    :param report: The report object to modify the title.
+    """
+    report.title = "Selenium Test Automation Summary"
+
+
 @pytest.fixture(scope="class")
-def setup(request):
-    browser_name = request.config.getoption("browser_name")
+def setup(request: pytest.FixtureRequest) -> None:
+    """
+    Set up the browser and start the test session.
+
+    :param request: The pytest fixture request object containing the test's configuration.
+    """
+    browser_name: str = request.config.getoption("browser_name")
+    headless: str = request.config.getoption("headless")
+
     if browser_name == "chrome":
         chrome_service = ChromeService(ChromeDriverManager().install())
-        driver = webdriver.Chrome(service=chrome_service)
+        chrome_options: ChromeOptions = ChromeOptions()
+        if headless:
+            chrome_options.add_argument("--headless")
+        chrome_options.add_argument("--window-size=1920,1080")
+        driver: webdriver.Chrome = webdriver.Chrome(service=chrome_service, options=chrome_options)
     elif browser_name == "firefox":
+        firefox_options: FirefoxOptions = FirefoxOptions()
+        if headless:
+            firefox_options.add_argument("--headless")
+        firefox_options.add_argument("--window-size=1920,1080")
         firefox_service = FirefoxService(GeckoDriverManager().install())
-        driver = webdriver.Firefox(service=firefox_service)
+        driver: webdriver.Firefox = webdriver.Firefox(service=firefox_service, options=firefox_options)
     else:
         raise ValueError(f"Unsupported browser: {browser_name}")
-    driver.get("https://rahulshettyacademy.com/angularpractice/")
+    driver.get(URL)
     driver.maximize_window()
     request.cls.driver = driver
     yield
     driver.close()
 
 
-# @pytest.hookimpl(hookwrapper=True)
-# def pytest_runtest_makereport(item):
-#     """
-#         Extends the PyTest Plugin to take and embed screenshot in html report, whenever test fails.
-#         :param item:
-#         """
-#     pytest_html = item.config.pluginmanager.getplugin('html')
-#     outcome = yield
-#     report = outcome.get_result()
-#     extra = getattr(report, 'extra', [])
-#
-#     if report.when == 'call' or report.when == "setup":
-#         xfail = hasattr(report, 'wasxfail')
-#         if (report.skipped and xfail) or (report.failed and not xfail):
-#             file_name = report.nodeid.replace("::", "_") + ".png"
-#             _capture_screenshot(file_name)
-#             if file_name:
-#                 html = '<div><img src="%s" alt="screenshot" style="width:304px;height:228px;" ' \
-#                        'onclick="window.open(this.src)" align="right"/></div>' % file_name
-#                 extra.append(pytest_html.extras.html(html))
-#         report.extra = extra
-#
-#
-# def _capture_screenshot(name):
-#     driver.get_screenshot_as_file(name)
+@pytest.hookimpl(hookwrapper=True)
+def pytest_runtest_makereport(item: pytest.Item) -> None:
+    """
+    Take a screenshot and attach it to the HTML report if the test fails.
+
+    :param item: The pytest item (test) that is being executed.
+    """
+    pytest_html: Any = item.config.pluginmanager.getplugin('html')
+    outcome = yield
+    report: pytest.TestReport = outcome.get_result()
+    extras: list = getattr(report, 'extras', [])
+
+    if report.when == 'call' or report.when == "setup":
+        xfail = hasattr(report, 'wasxfail')
+        # Ensure the test failed or was expected to fail
+        if (report.skipped and xfail) or (report.failed and not xfail):
+            # Get the driver from the class level
+            driver: Optional[webdriver.Remote] = getattr(item.cls, 'driver', None)
+            if driver:
+                # Generate a unique file name using test name, status, and timestamp
+                timestamp: str = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+                test_case_name: str = report.nodeid.split("::")[-1]
+                file_name: str = f"{test_case_name}_failed_{timestamp}.png"
+                screenshot_path: Path = SCREENSHOT_DIR / file_name
+                # Take the screenshot
+                driver.save_screenshot(str(screenshot_path))
+                if screenshot_path.exists():
+                    html = f'<div><img src="{screenshot_path}" alt="screenshot" style="width:304px;height:228px;" ' \
+                           'onclick="window.open(this.src)" align="right"/></div>'
+                    extras.append(pytest_html.extras.url(driver.current_url))
+                    extras.append(pytest_html.extras.html(html))
+
+        report.extras = extras
+
