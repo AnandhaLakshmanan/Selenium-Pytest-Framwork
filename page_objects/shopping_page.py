@@ -1,7 +1,9 @@
+from typing import List
+
 from selenium.webdriver.chrome.webdriver import WebDriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
-from typing import List
+
 from page_objects.base_page import BasePage
 from page_objects.checkout_page import CheckoutPage
 
@@ -11,6 +13,7 @@ class ShoppingPage(BasePage):
     Represents the shopping page of the application. Provides methods to interact
     with product elements, add products to the cart, and proceed to checkout.
     """
+
     # Locators
     PRODUCT_CARDS = (By.XPATH, "//app-card/div")
     PRODUCT_NAME = (By.XPATH, "div[@class='card-body']/h4")

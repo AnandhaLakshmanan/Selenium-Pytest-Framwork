@@ -1,11 +1,12 @@
 import inspect
 import json
 import logging
-from .config import TEST_DATA_DIR, LOG_DIR
 from pathlib import Path
-from typing import List, Dict, Any
+from typing import Any, Dict, List
 
 import pytest
+
+from .config import LOG_DIR, TEST_DATA_DIR
 
 
 @pytest.mark.usefixtures("setup")
@@ -27,7 +28,9 @@ class TestUtilities:
 
         if not logger.handlers:
             file_handler: logging.FileHandler = logging.FileHandler(file_path, mode="a")
-            formatter: logging.Formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(name)s - %(message)s")
+            formatter: logging.Formatter = logging.Formatter(
+                "%(asctime)s - %(levelname)s - %(name)s - %(message)s"
+            )
             file_handler.setFormatter(formatter)
             logger.addHandler(file_handler)
 
@@ -44,7 +47,9 @@ class TestUtilities:
         """
         file_path: Path = TEST_DATA_DIR / file_name
         if not file_path.exists():
-            raise FileNotFoundError(f"File '{file_name}' not found in '{TEST_DATA_DIR}'.")
+            raise FileNotFoundError(
+                f"File '{file_name}' not found in '{TEST_DATA_DIR}'."
+            )
         return file_path
 
     @staticmethod
@@ -59,8 +64,11 @@ class TestUtilities:
         file_path: Path = TestUtilities.get_test_data_file_path(file_name)
         try:
             with file_path.open(mode="r") as file:
-                return json.load(file)
+                test_data: List[Dict[str, Any]] = json.load(file)
+                return test_data
         except FileNotFoundError:
-            raise Exception(f"Test data file '{file_name}' not found in 'test_data' directory.")
+            raise Exception(
+                f"Test data file '{file_name}' not found in 'test_data' directory."
+            )
         except json.JSONDecodeError:
             raise Exception(f"Invalid JSON format in file '{file_name}'.")
