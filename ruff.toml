@@ -1,0 +1,70 @@
+# Exclude common directories and files that shouldn't be linted.
+exclude = [
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".git-rewrite",
+    ".hg",
+    ".ipynb_checkpoints",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".pyenv",
+    ".pytest_cache",
+    ".pytype",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    ".vscode",
+    "__pypackages__",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "env",
+    "envs",
+    "node_modules",
+    "site-packages",
+    "venv",
+    "virtualenv",
+]
+
+# Match Black's line length and indentation.
+line-length = 88
+indent-width = 4
+
+# Specify the target Python version for compatibility checks.
+target-version = "py312"
+
+[lint]
+# Enable Pyflakes (`F`) and pycodestyle (`E`) rules selectively.
+select = [
+    "E4",  # Errors related to whitespace
+    "E7",  # Errors related to syntax or expressions
+    "E9",  # Runtime errors
+    "F",   # Pyflakes checks
+    "I",   # Import sorting checks
+]
+
+# Ignore rules that may not be relevant (adjust as needed).
+ignore = []
+
+# Automatically fix issues for all enabled rules (when `--fix` is provided).
+fixable = ["ALL"]
+unfixable = []
+
+# Allow dummy variables (e.g., `_var`, `_123`) to avoid unused variable warnings.
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+
+[format]
+# Align with Black's formatting style.
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+
+# Enable formatting for code snippets in docstrings.
+docstring-code-format = true
+docstring-code-line-length = 88
