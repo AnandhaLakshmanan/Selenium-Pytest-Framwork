@@ -15,7 +15,7 @@ repos:
     rev: 'v1.13.0'
     hooks:
     -    id: mypy
-         args: [--strict]  # Optional: Add any mypy flags here
+         args: [--strict]
          additional_dependencies:
          - pytest==8.3.3
          - pytest-html==4.1.1
