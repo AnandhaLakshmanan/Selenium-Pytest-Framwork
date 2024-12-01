@@ -15,14 +15,14 @@ class TestFormSubmission(TestUtilities):
     @pytest.mark.parametrize(
         "test_data", TestUtilities.load_test_data("form_submission.json")
     )
-    def test_form_submission(self, test_data: Dict[str, Any]):
+    def test_form_submission(self, test_data: Dict[str, Any]) -> None:
         """
         Validates the form submission process using parameterized test data.
 
         :param test_data: A dictionary containing the test data for form fields.
         """
         logger: logging.Logger = self.create_logger()
-        home_page: HomePage = HomePage(self.driver)
+        home_page: HomePage = HomePage(self.driver)  # type: ignore
         logger.info(f"Starting form submission test with data: {test_data}")
 
         # Fill out the form
@@ -37,4 +37,4 @@ class TestFormSubmission(TestUtilities):
         ), f"Expected '{expected_message}' but got '{actual_message}' for {test_data['name']}"
 
         # Refresh the page to reset the form
-        self.driver.refresh()
+        self.driver.refresh()  # type: ignore

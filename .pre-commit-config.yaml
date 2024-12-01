@@ -2,15 +2,22 @@ repos:
 -   repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v2.3.0
     hooks:
-    -   id: check-yaml
-    -   id: end-of-file-fixer
-    -   id: trailing-whitespace
-- repo: https://github.com/astral-sh/ruff-pre-commit
-  # Ruff version.
-  rev: v0.8.1
-  hooks:
-    # Run the linter.
-    - id: ruff
-      args: [ --fix ]
-    # Run the formatter.
-    - id: ruff-format
+    -    id: check-yaml
+    -    id: end-of-file-fixer
+    -    id: trailing-whitespace
+-   repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.8.1
+    hooks:
+    -    id: ruff
+         args: [ --fix ]
+    -    id: ruff-format
+-   repo: https://github.com/pre-commit/mirrors-mypy
+    rev: 'v1.13.0'
+    hooks:
+    -    id: mypy
+         args: [--strict]  # Optional: Add any mypy flags here
+         additional_dependencies:
+         - pytest==8.3.3
+         - pytest-html==4.1.1
+         - selenium==4.25.0
+         - webdriver-manager==4.0.2

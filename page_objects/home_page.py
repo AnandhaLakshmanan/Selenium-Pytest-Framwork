@@ -1,7 +1,10 @@
+from typing import Any
+
+from selenium.webdriver.chrome.webdriver import WebDriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.remote.webdriver import WebDriver
-from page_objects.shopping_page import ShoppingPage
+
 from page_objects.base_page import BasePage
+from page_objects.shopping_page import ShoppingPage
 
 
 class HomePage(BasePage):
@@ -83,7 +86,9 @@ class HomePage(BasePage):
         if status not in self.EMPLOYMENT_STATUS_RADIOS:
             raise ValueError(f"Invalid employment status: {status}")
 
-        radio_button = self.driver.find_element(By.ID, self.EMPLOYMENT_STATUS_RADIOS[status])
+        radio_button = self.driver.find_element(
+            By.ID, self.EMPLOYMENT_STATUS_RADIOS[status]
+        )
         if radio_button.is_enabled():
             radio_button.click()
         else:
@@ -120,7 +125,7 @@ class HomePage(BasePage):
         """
         return self.driver.find_element(*self.SUCCESS_MESSAGE_ALERT).text
 
-    def fill_out_form(self, test_data: dict) -> None:
+    def fill_out_form(self, test_data: dict[str, Any]) -> None:
         """
         Completes the entire form with the provided details.
 

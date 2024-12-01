@@ -1,11 +1,11 @@
 from typing import List
 
-from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.webdriver import WebDriver
+from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 
-from page_objects.purchase_page import PurchasePage
 from page_objects.base_page import BasePage
+from page_objects.purchase_page import PurchasePage
 
 
 class CheckoutPage(BasePage):
@@ -13,6 +13,7 @@ class CheckoutPage(BasePage):
     Represents the checkout page of the application. Provides methods to interact
     with checkout-related elements and navigate to the purchase page.
     """
+
     # Locators
     PROCEED_TO_PURCHASE_BUTTON = (By.CSS_SELECTOR, ".btn.btn-success")
     PRODUCTS_IN_CART = (By.XPATH, "//div/h4[@class='media-heading']")
@@ -41,7 +42,7 @@ class CheckoutPage(BasePage):
 
         :return: The quantity as a string.
         """
-        return self.driver.find_element(*self.QUANTITY).get_attribute('value')
+        return str(self.driver.find_element(*self.QUANTITY).get_attribute("value"))
 
     def enter_quantity(self, quantity: int) -> None:
         """

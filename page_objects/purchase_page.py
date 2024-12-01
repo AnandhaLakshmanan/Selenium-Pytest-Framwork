@@ -1,5 +1,6 @@
-from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.webdriver import WebDriver
+from selenium.webdriver.common.by import By
+
 from page_objects.base_page import BasePage
 
 
@@ -54,4 +55,4 @@ class PurchasePage(BasePage):
 
         :return: The success message as a string.
         """
-        return self.wait_for_element_to_be_present(self.SUCCESS_MESSAGE_ALERT).text
+        return str(self.wait_for_element_to_be_present(self.SUCCESS_MESSAGE_ALERT).text)
