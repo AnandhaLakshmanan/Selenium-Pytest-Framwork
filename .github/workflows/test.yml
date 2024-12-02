@@ -1,5 +1,11 @@
-name: Automation tests
-on: [push]
+name: E2E Automation Tests
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 jobs:
   test:
     runs-on: ubuntu-latest
