@@ -69,13 +69,11 @@ def setup(request: pytest.FixtureRequest) -> Generator[None, None, None]:
         chrome_options: ChromeOptions = ChromeOptions()
         if headless:
             chrome_options.add_argument("--headless")
-        chrome_options.add_argument("--window-size=1920,1080")
         driver = webdriver.Chrome(service=chrome_service, options=chrome_options)
     elif browser_name == "firefox":
         firefox_options: FirefoxOptions = FirefoxOptions()
         if headless:
             firefox_options.add_argument("--headless")
-        firefox_options.add_argument("--window-size=1920,1080")
         firefox_service = FirefoxService(GeckoDriverManager().install())
         driver = webdriver.Firefox(service=firefox_service, options=firefox_options)
     else:
