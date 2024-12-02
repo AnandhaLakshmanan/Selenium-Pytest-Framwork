@@ -31,7 +31,7 @@ def pytest_addoption(parser: pytest.Parser) -> None:
     :param parser: The pytest parser to add custom options to.
     """
     parser.addoption(
-        "--browser_name",
+        "--browser",
         action="store",
         default="chrome",
         help="Specify the browser to use",
@@ -60,7 +60,7 @@ def setup(request: pytest.FixtureRequest) -> Generator[None, None, None]:
 
     :param request: The pytest fixture request object containing the test's configuration.
     """
-    browser_name: str = request.config.getoption("browser_name")
+    browser_name: str = request.config.getoption("browser")
     headless: str = request.config.getoption("headless")
     driver: Optional[webdriver.Chrome | webdriver.Firefox] = None
 
