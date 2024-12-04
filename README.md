@@ -10,11 +10,13 @@ A robust and scalable test automation framework leveraging **Selenium** and **Py
 
 ## Prerequisites
 - Python Installation: Ensure Python 3.12 is installed on your system. [Download Python](https://www.python.org/downloads/).
+  
 - Clone Repository:
 ```bash
 git clone https://github.com/AnandhaLakshmanan/Selenium-Pytest-Framwork.git
 cd Selenium-Pytest-Framwork
 ```
+
 - Install Dependencies:
 ```bash
 pip install -r requirements.txt
@@ -25,10 +27,12 @@ pip install -r requirements.txt
 ```bash
 pytest tests/
 ```
+
 - Run Specific Test Case
 ```bash
 pytest tests/<test_file_name>::<test_class_name>::<test_case_name>
 ```
+
 Check the ```tmp``` directory for logs, HTML reports, and screenshots of failed test cases.
 
 ## Configuration options
@@ -37,10 +41,12 @@ Check the ```tmp``` directory for logs, HTML reports, and screenshots of failed 
 ```
 pytest --browser=firefox
 ```
+
 - Headless Mode:
 Disabled by default. Enable it for running tests in CI/CD environments:
 ```
 pytest --headless
 ```
+
 - HTML Reports:
 Enabled by default. Modify or disable settings in the pytest.ini file.
